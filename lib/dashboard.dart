@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:latihan/dashboard/desktop/desktop.dart';
+import 'package:latihan/dashboard/desktop/home_screen.dart';
+import 'package:latihan/dashboard/mobile/home_screen.dart';
 import 'package:latihan/dashboard/mobile/mobile.dart';
-import 'package:latihan/dashboard/tablet/tablet.dart';
+import 'package:latihan/dashboard/tablet/home_screen1.dart';
 import 'package:latihan/widget/responsive.dart';
 
 class Dashboard extends StatelessWidget {
@@ -10,9 +11,9 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Responsive(
-      desktop: DesktopDashboard(),
-      mobile: MobileDashboard(),
-      tablet: TabletDashboard(),
+      desktop: HomeScreen(),
+      mobile: HomeScreen2(),
+      tablet: HomeScreen1(),
     );
   }
 }

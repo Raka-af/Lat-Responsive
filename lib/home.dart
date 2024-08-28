@@ -16,15 +16,11 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const SideMenu(),
       body: SafeArea(
           child: Row(
         children: [
-          if (Responsive.isDesktop(context))
-            const Expanded(
-              child: SideMenu(),
-            ),
-          Expanded(flex: 5, child: Dashboard())
+          if (Responsive.isMobile(context))
+            Expanded(flex: 5, child: Dashboard())
         ],
       )),
     );

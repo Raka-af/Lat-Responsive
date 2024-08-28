@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:latihan/dashboard.dart';
 import 'package:latihan/home.dart';
 
 void main() {
@@ -11,11 +12,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const Home(),
+      debugShowCheckedModeBanner: false,
+      home: const Dashboard(),
     );
   }
 }
