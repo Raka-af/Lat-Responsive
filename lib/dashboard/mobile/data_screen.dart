@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:latihan/dashboard/mobile/layout_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -41,139 +42,182 @@ class DataJenisKelamin extends StatelessWidget {
           width: screenWidth * 0.9,
           height: screenHeight * 0.3,
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          child: Column(
-            children: <Widget>[
-              Text(
-                'Data Jenis Kelamin',
-                style: TextStyle(
-                    fontSize: screenHeight * 0.013 + screenWidth * 0.013,
-                    fontWeight: FontWeight.w500),
-              ),
-              Container(
-                height: screenHeight * 0.003,
-                width: screenWidth * 0.25,
-                color: Colors.black,
-                margin: EdgeInsets.only(top: 8),
-              ),
-              SizedBox(
-                height: screenHeight * 0.02,
-              ),
-              Row(
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(217, 217, 217, 217),
-                      borderRadius: BorderRadius.circular(20),
+          child: StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('data_penduduk')
+                  .doc('Atw91p58rLoqyy0mes74')
+                  .collection('data')
+                  .doc('G2C9tQEBj2u4GXm7P9Iz')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (!snapshot.hasData || snapshot.data == null) {
+                  return Center(child: Text('Tidak ada data'));
+                }
+
+                var data = snapshot.data!.data() as Map<String, dynamic>;
+                return Column(
+                  children: <Widget>[
+                    StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('data_penduduk')
+                          .doc('Atw91p58rLoqyy0mes74')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+
+                        if (!snapshot.hasData || snapshot.data == null) {
+                          return Center(child: Text('Tidak ada data'));
+                        }
+
+                        var cat = snapshot.data!.data() as Map<String, dynamic>;
+                        return Text(
+                          cat['name_kategori'],
+                          style: TextStyle(
+                              fontSize:
+                                  screenHeight * 0.013 + screenWidth * 0.013,
+                              fontWeight: FontWeight.w500),
+                        );
+                      },
                     ),
-                    width: screenWidth * 0.25,
-                    height: screenHeight * 0.2,
-                    child: Column(
+                    Container(
+                      height: screenHeight * 0.003,
+                      width: screenWidth * 0.25,
+                      color: Colors.black,
+                      margin: EdgeInsets.only(top: 8),
+                    ),
+                    SizedBox(
+                      height: screenHeight * 0.02,
+                    ),
+                    Row(
                       children: <Widget>[
-                        Text(
-                          'Laki Laki',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.010 + screenWidth * 0.010,
-                              fontWeight: FontWeight.w500),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(217, 217, 217, 217),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          width: screenWidth * 0.25,
+                          height: screenHeight * 0.2,
+
+                          //Laki Laki
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                data['nama'],
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: screenHeight * 0.010 +
+                                        screenWidth * 0.010,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Image(
+                                image: AssetImage("assets/Penduduk/cowo.png"),
+                                width: screenWidth * 0.2,
+                                height: screenHeight * 0.1,
+                              ),
+                              Text(
+                                data['jumlah'].toString(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: screenHeight * 0.010 +
+                                        screenWidth * 0.010,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),
                         ),
-                        Image(
-                          image: AssetImage("assets/Penduduk/cowo.png"),
-                          width: screenWidth * 0.2,
-                          height: screenHeight * 0.1,
+                        SizedBox(
+                          width: 10,
                         ),
-                        Text(
-                          '1000',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.010 + screenWidth * 0.010,
-                              fontWeight: FontWeight.w500),
+
+                        //Perempuan
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(217, 217, 217, 217),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          width: screenWidth * 0.25,
+                          height: screenHeight * 0.2,
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                data['nama2'],
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: screenHeight * 0.010 +
+                                        screenWidth * 0.010,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Image(
+                                image: AssetImage("assets/Penduduk/cewe.png"),
+                                width: screenWidth * 0.2,
+                                height: screenHeight * 0.1,
+                              ),
+                              Text(
+                                data['jumlah2'].toString(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: screenHeight * 0.010 +
+                                        screenWidth * 0.010,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+
+                        //Jumlah Penduduk
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(217, 217, 217, 217),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          width: screenWidth * 0.25,
+                          height: screenHeight * 0.2,
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                data['nama3'],
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: screenHeight * 0.010 +
+                                        screenWidth * 0.010,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Image(
+                                image: AssetImage("assets/Penduduk/Jumlah.png"),
+                                width: screenWidth * 0.2,
+                                height: screenHeight * 0.1,
+                              ),
+                              Text(
+                                data['jumlah3'].toString(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: screenHeight * 0.010 +
+                                        screenWidth * 0.010,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),
                         ),
                       ],
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(217, 217, 217, 217),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    width: screenWidth * 0.25,
-                    height: screenHeight * 0.2,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Perempuan',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.010 + screenWidth * 0.010,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Image(
-                          image: AssetImage("assets/Penduduk/cewe.png"),
-                          width: screenWidth * 0.2,
-                          height: screenHeight * 0.1,
-                        ),
-                        Text(
-                          '1000',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.010 + screenWidth * 0.010,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(217, 217, 217, 217),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    width: screenWidth * 0.25,
-                    height: screenHeight * 0.2,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Jumlah',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.010 + screenWidth * 0.010,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Image(
-                          image: AssetImage("assets/Penduduk/Jumlah.png"),
-                          width: screenWidth * 0.2,
-                          height: screenHeight * 0.1,
-                        ),
-                        Text(
-                          '1000',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.010 + screenWidth * 0.010,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                  ),
-                ],
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              ),
-            ],
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
+                  ],
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                );
+              }),
         ),
       ),
     );
@@ -201,138 +245,181 @@ class DataAgama extends StatelessWidget {
           width: screenWidth * 0.9,
           height: screenHeight * 0.3,
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          child: Column(
-            children: <Widget>[
-              Text(
-                'Data Agama',
-                style: TextStyle(
-                    fontSize: screenHeight * 0.013 + screenWidth * 0.013,
-                    fontWeight: FontWeight.w500),
-              ),
-              Container(
-                height: screenHeight * 0.003,
-                width: screenWidth * 0.25,
-                color: Colors.black,
-                margin: EdgeInsets.only(top: 8),
-              ),
-              SizedBox(
-                height: screenHeight * 0.02,
-              ),
-              Row(
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('data_penduduk')
+                .doc('k5SU05RILjaoAEOhfTcK')
+                .collection('data')
+                .doc('rOHL20U53f6Q81IWgfFh')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (!snapshot.hasData || snapshot.data == null) {
+                return Center(child: Text('Tidak ada data'));
+              }
+
+              var data = snapshot.data!.data() as Map<String, dynamic>;
+              return Column(
                 children: <Widget>[
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('data_penduduk')
+                        .doc('k5SU05RILjaoAEOhfTcK')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      if (!snapshot.hasData || snapshot.data == null) {
+                        return Center(child: Text('Tidak ada data'));
+                      }
+
+                      var cat = snapshot.data!.data() as Map<String, dynamic>;
+                      return Text(
+                        cat['name_kategori'],
+                        style: TextStyle(
+                            fontSize:
+                                screenHeight * 0.013 + screenWidth * 0.013,
+                            fontWeight: FontWeight.w500),
+                      );
+                    },
+                  ),
                   Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(217, 217, 217, 217),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                    height: screenHeight * 0.003,
                     width: screenWidth * 0.25,
-                    height: screenHeight * 0.2,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Islam',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Image(
-                          image: AssetImage("assets/Agama/Islam.png"),
-                          width: screenWidth * 0.2,
-                          height: screenHeight * 0.1,
-                        ),
-                        Text(
-                          '1000',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
+                    color: Colors.black,
+                    margin: EdgeInsets.only(top: 8),
                   ),
                   SizedBox(
-                    width: 10,
+                    height: screenHeight * 0.02,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(217, 217, 217, 217),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    width: screenWidth * 0.25,
-                    height: screenHeight * 0.2,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Kristen',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(217, 217, 217, 217),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        Image(
-                          image: AssetImage("assets/Agama/Kristen.png"),
-                          width: screenWidth * 0.2,
-                          height: screenHeight * 0.1,
+                        width: screenWidth * 0.25,
+                        height: screenHeight * 0.2,
+
+                        //Agama Islam
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              data['agama'],
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: screenHeight * 0.013 +
+                                      screenWidth * 0.013,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Image(
+                              image: AssetImage("assets/Agama/Islam.png"),
+                              width: screenWidth * 0.2,
+                              height: screenHeight * 0.1,
+                            ),
+                            Text(
+                              data['jumlah'].toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: screenHeight * 0.013 +
+                                      screenWidth * 0.013,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
                         ),
-                        Text(
-                          '1000',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+
+                      //Agama Kristen
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(217, 217, 217, 217),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(217, 217, 217, 217),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    width: screenWidth * 0.25,
-                    height: screenHeight * 0.2,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Buddha',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
+                        width: screenWidth * 0.25,
+                        height: screenHeight * 0.2,
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              data['agama2'],
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: screenHeight * 0.013 +
+                                      screenWidth * 0.013,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Image(
+                              image: AssetImage("assets/Agama/Kristen.png"),
+                              width: screenWidth * 0.2,
+                              height: screenHeight * 0.1,
+                            ),
+                            Text(
+                              data['jumlah2'].toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: screenHeight * 0.013 +
+                                      screenWidth * 0.013,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
                         ),
-                        Image(
-                          image: AssetImage("assets/Agama/Buddha.png"),
-                          width: screenWidth * 0.2,
-                          height: screenHeight * 0.1,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+
+                      //Agama Buddha
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(217, 217, 217, 217),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        Text(
-                          '1000',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
+                        width: screenWidth * 0.25,
+                        height: screenHeight * 0.2,
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              data['agama3'],
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: screenHeight * 0.013 +
+                                      screenWidth * 0.013,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Image(
+                              image: AssetImage("assets/Agama/Buddha.png"),
+                              width: screenWidth * 0.2,
+                              height: screenHeight * 0.1,
+                            ),
+                            Text(
+                              data['jumlah3'].toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: screenHeight * 0.013 +
+                                      screenWidth * 0.013,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
                         ),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
+                      ),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   ),
                 ],
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              ),
-            ],
-            crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+              );
+            },
           ),
         ),
       ),
@@ -363,142 +450,60 @@ class DataPendidikan extends StatelessWidget {
           width: screenWidth * 0.9,
           height: screenHeight * 0.55,
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          child: Column(
-            children: <Widget>[
-              Text(
-                'Data Pendidikan',
-                style: TextStyle(
-                    fontSize: screenHeight * 0.013 + screenWidth * 0.013,
-                    fontWeight: FontWeight.w500),
-              ),
-              Container(
-                height: screenHeight * 0.003,
-                width: screenWidth * 0.25,
-                color: Colors.black,
-                margin: EdgeInsets.only(top: 8),
-              ),
-              SizedBox(
-                height: screenHeight * 0.02,
-              ),
-              Row(
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('data_penduduk')
+                .doc('Qa8kQjKyRvQBwJXi8P7J')
+                .collection('data')
+                .doc('K7uyXP2cFjqHG2p7Lyls')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (!snapshot.hasData || snapshot.data == null) {
+                return Center(child: Text('Tidak ada data'));
+              }
+
+              var data = snapshot.data!.data() as Map<String, dynamic>;
+              return Column(
                 children: <Widget>[
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('data_penduduk')
+                        .doc('Qa8kQjKyRvQBwJXi8P7J')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      if (!snapshot.hasData || snapshot.data == null) {
+                        return Center(child: Text('Tidak ada data'));
+                      }
+
+                      var cat = snapshot.data!.data() as Map<String, dynamic>;
+                      return Text(
+                        cat['name_kategori'],
+                        style: TextStyle(
+                            fontSize:
+                                screenHeight * 0.013 + screenWidth * 0.013,
+                            fontWeight: FontWeight.w500),
+                      );
+                    },
+                  ),
                   Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(217, 217, 217, 217),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                    height: screenHeight * 0.003,
                     width: screenWidth * 0.25,
-                    height: screenHeight * 0.2,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'TK/Paud',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Image(
-                          image: AssetImage("assets/Pendidikan/Tk.png"),
-                          width: screenWidth * 0.2,
-                          height: screenHeight * 0.1,
-                        ),
-                        Text(
-                          '1000',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
+                    color: Colors.black,
+                    margin: EdgeInsets.only(top: 8),
                   ),
                   SizedBox(
-                    width: 10,
+                    height: screenHeight * 0.02,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(217, 217, 217, 217),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    width: screenWidth * 0.25,
-                    height: screenHeight * 0.2,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'SD',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Image(
-                          image: AssetImage("assets/Pendidikan/Sd.png"),
-                          width: screenWidth * 0.2,
-                          height: screenHeight * 0.1,
-                        ),
-                        Text(
-                          '1000',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(217, 217, 217, 217),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    width: screenWidth * 0.25,
-                    height: screenHeight * 0.2,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'SMP',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Image(
-                            image: AssetImage("assets/Pendidikan/Smp.png"),
-                            width: screenWidth * 0.2,
-                            height: screenHeight * 0.1),
-                        Text(
-                          '1000',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  screenHeight * 0.013 + screenWidth * 0.013,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                  ),
-                ],
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Column(
-                children: [
                   Row(
-                    children: [
+                    children: <Widget>[
                       Container(
                         decoration: BoxDecoration(
                           color: Color.fromARGB(217, 217, 217, 217),
@@ -506,10 +511,12 @@ class DataPendidikan extends StatelessWidget {
                         ),
                         width: screenWidth * 0.25,
                         height: screenHeight * 0.2,
+
+                        //TK/Paud
                         child: Column(
                           children: <Widget>[
                             Text(
-                              'SMA',
+                              data['pendidikan'],
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: screenHeight * 0.013 +
@@ -517,84 +524,89 @@ class DataPendidikan extends StatelessWidget {
                                   fontWeight: FontWeight.w500),
                             ),
                             Image(
-                                image: AssetImage("assets/Pendidikan/Sma.png"),
-                                width: screenWidth * 0.2,
-                                height: screenHeight * 0.1),
-                            Text(
-                              '1000',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: screenHeight * 0.013 +
-                                      screenWidth * 0.013,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(217, 217, 217, 217),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        width: screenWidth * 0.25,
-                        height: screenHeight * 0.2,
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              'Sarjana',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: screenHeight * 0.013 +
-                                      screenWidth * 0.013,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Image(
-                                image: AssetImage("assets/Pendidikan/S1.png"),
-                                width: screenWidth * 0.2,
-                                height: screenHeight * 0.1),
-                            Text(
-                              '1000',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: screenHeight * 0.013 +
-                                      screenWidth * 0.013,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(217, 217, 217, 217),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        width: screenWidth * 0.25,
-                        height: screenHeight * 0.2,
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              'Magister',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: screenHeight * 0.013 +
-                                      screenWidth * 0.013,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Image(
-                              image: AssetImage("assets/Pendidikan/S2.png"),
+                              image: AssetImage("assets/Pendidikan/Tk.png"),
                               width: screenWidth * 0.2,
                               height: screenHeight * 0.1,
                             ),
                             Text(
-                              '1000',
+                              data['jumlah'].toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: screenHeight * 0.013 +
+                                      screenWidth * 0.013,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+
+                      //SD
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(217, 217, 217, 217),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        width: screenWidth * 0.25,
+                        height: screenHeight * 0.2,
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              data['pendidikan2'],
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: screenHeight * 0.013 +
+                                      screenWidth * 0.013,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Image(
+                              image: AssetImage("assets/Pendidikan/Sd.png"),
+                              width: screenWidth * 0.2,
+                              height: screenHeight * 0.1,
+                            ),
+                            Text(
+                              data['jumlah2'].toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: screenHeight * 0.013 +
+                                      screenWidth * 0.013,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+
+                      //SMP
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(217, 217, 217, 217),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        width: screenWidth * 0.25,
+                        height: screenHeight * 0.2,
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              data['pendidikan3'],
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: screenHeight * 0.013 +
+                                      screenWidth * 0.013,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Image(
+                                image: AssetImage("assets/Pendidikan/Smp.png"),
+                                width: screenWidth * 0.2,
+                                height: screenHeight * 0.1),
+                            Text(
+                              data['jumlah3'].toString(),
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: screenHeight * 0.013 +
@@ -608,10 +620,136 @@ class DataPendidikan extends StatelessWidget {
                     ],
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(217, 217, 217, 217),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            width: screenWidth * 0.25,
+                            height: screenHeight * 0.2,
+
+                            //SMA
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  data['pendidikan4'],
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: screenHeight * 0.013 +
+                                          screenWidth * 0.013,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                Image(
+                                    image:
+                                        AssetImage("assets/Pendidikan/Sma.png"),
+                                    width: screenWidth * 0.2,
+                                    height: screenHeight * 0.1),
+                                Text(
+                                  data['jumlah4'].toString(),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: screenHeight * 0.013 +
+                                          screenWidth * 0.013,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+
+                          //Sarjana
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(217, 217, 217, 217),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            width: screenWidth * 0.25,
+                            height: screenHeight * 0.2,
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  data['pendidikan5'],
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: screenHeight * 0.013 +
+                                          screenWidth * 0.013,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                Image(
+                                    image:
+                                        AssetImage("assets/Pendidikan/S1.png"),
+                                    width: screenWidth * 0.2,
+                                    height: screenHeight * 0.1),
+                                Text(
+                                  data['jumlah5'].toString(),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: screenHeight * 0.013 +
+                                          screenWidth * 0.013,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+
+                          //Magister
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(217, 217, 217, 217),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            width: screenWidth * 0.25,
+                            height: screenHeight * 0.2,
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  data['pendidikan6'],
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: screenHeight * 0.013 +
+                                          screenWidth * 0.013,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                Image(
+                                  image: AssetImage("assets/Pendidikan/S2.png"),
+                                  width: screenWidth * 0.2,
+                                  height: screenHeight * 0.1,
+                                ),
+                                Text(
+                                  data['jumlah6'].toString(),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: screenHeight * 0.013 +
+                                          screenWidth * 0.013,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      ),
+                    ],
+                  ),
                 ],
-              ),
-            ],
-            crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+              );
+            },
           ),
         ),
       ),

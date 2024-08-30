@@ -98,7 +98,7 @@ class Ladang extends StatelessWidget {
                           ),
                         ),
                         SizedBox(
-                          width: 30,
+                          width: 20,
                         ),
                         Column(
                           children: [

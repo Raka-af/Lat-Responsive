@@ -30,7 +30,7 @@ class Cafe extends StatelessWidget {
       color: Colors.white,
       width: 1500,
       height: 950,
-      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
       child: Column(
         children: [
           Text(
